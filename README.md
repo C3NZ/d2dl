@@ -1,18 +1,14 @@
-# Project title
+# Dive into deep learning project examples/code
 
 ## Description
-This project is currently under construction.
+This will be my repo for all work I do that involves reading the dive into deep
+learning book. If 
 
 ## Goals
-### Short term goals
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
-
 ### Long term goals
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
+- [ ] To have a better understanding of the calculus and linear algebra behind deep learning
+- [ ] To have a better understanding of the neural network architecture.
+- [ ] To buff my portfolio up with a cool data science project.
 
 ## How to run/setup
 Instructions on the setup process needed for running locally.
