@@ -55,7 +55,7 @@ def detach_computation():
         u = y.detach()
         # Now we can compute the gradient of z with respect to x while treating
         # u as a constant. (The derivative becomes u*x instead of 3x^2, which
-        # would've been computed has we used y instead of u).
+        # would've been computed had we used y instead of u).
         z = u * x
 
     print("z")
@@ -75,5 +75,51 @@ def detach_computation():
     print(x.grad == 2 * x)
 
 
+def compute_gradient_with_control_flow():
+    """
+    How can we handle computing the gradient of a functino that introduces
+    control flow to our program?
+    """
+
+    def f(a):
+        """
+        A piecewise mathematical function that is used for computing some
+        arbritrary values.
+        """
+        b = 2 * a
+
+        # Multiply each element by 2 until
+        # the l2 norm of b is greater than 1000
+        while np.linalg.norm(b) < 1000:
+            b = 2 * b
+
+        # If the sum of b is greater than 0, c = b, else
+        # c = 100 * b.
+        if b.sum() > 0:
+            c = b
+        else:
+            c = 100 * b
+
+        return c
+
+    # Create a random normal distribution and initialize it's gradient array.
+    a = np.random.normal()
+    a.attach_grad()
+
+    # Record all gradients when computing the result of f(a)
+    with autograd.record():
+        d = f(a)
+
+    # Backward propagte d in order to obtain the gradients for variables a.
+    d.backward()
+
+    # In f(a), we're simply multiplying a by some scalar number that is
+    # determined by the initial random normal distribution. We can
+    # mathematically formula f(a) = k * a, where k is the scalar multiplied
+    # by a. To verify our gradient, we can simply check if f(a) / k = a.
+    print("f(a) / k = a: ", a.grad == d / a)
+
+
 if __name__ == "__main__":
     detach_computation()
+    compute_gradient_with_control_flow()
