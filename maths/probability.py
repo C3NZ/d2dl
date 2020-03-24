@@ -30,10 +30,13 @@ def visualize_probability_convergence():
     Visualize the convergence of sampling 
     """
     fair_probs = [1.0 / 6] * 6
+
     # Run 500 experiments where you roll the dice ten times.
     counts = np.random.multinomial(10, fair_probs, size=500)
+
     # Summarize all of the counts in each column for each row.
     cum_counts = counts.astype(np.float32).cumsum(axis=0)
+
     # Compute the estimate probability for each dice being rolled through
     # all of the experiments. This will converge towards 16%
     estimates = cum_counts / cum_counts.sum(axis=1, keepdims=True)
@@ -45,9 +48,11 @@ def visualize_probability_convergence():
 
     #  Add the true probability of you rolling any dice number
     d2l.plt.axhline(y=0.167, color="black", linestyle="dashed")
+
     # Set the x and y label for the current axes
     d2l.plt.gca().set_xlabel("Groups of experiments")
     d2l.plt.gca().set_ylabel("Estimated probability")
+
     # Create the legend and save the figure as an image.
     d2l.plt.legend()
     d2l.plt.savefig("probability_convergence.png")
