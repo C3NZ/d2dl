@@ -26,6 +26,15 @@ def generate_synthetic_data(weights, bias, num_examples):
     return features, targets
 
 
+def plot_generated_data_points(features, targets):
+    """
+    Plot our features and targets in a scatter plot.
+    """
+    d2l.set_figsize((3.5, 2.5))
+    d2l.plt.scatter(features[:, 1].asnumpy(), targets.asnumpy(), 1)
+    d2l.plt.savefig("generated_data")
+
+
 def main():
     """
     Execute main functions of this module.
@@ -33,10 +42,8 @@ def main():
     true_weights = np.array([2, -3.4])
     true_bias = 4.2
 
-    features, labels = generate_synthetic_data(true_weights, true_bias, 1000)
-
-    print(features)
-    print(labels)
+    features, targets = generate_synthetic_data(true_weights, true_bias, 1000)
+    plot_generated_data_points(features, targets)
 
 
 if __name__ == "__main__":
