@@ -89,7 +89,7 @@ def stochastic_gradient_descent(
     Will update the parameters in place.
     """
     for parameter in trainable_parameters:
-        parameter[:] = (parameter - learning_rate * parameter.grad) / batch_size
+        parameter[:] = parameter - (learning_rate * parameter.grad / batch_size)
 
 
 def execute_model() -> None:
@@ -106,23 +106,61 @@ def execute_model() -> None:
     trainable_weights.attach_grad()
     trainable_bias.attach_grad()
 
+    # Setup synthetically generated data.
+    true_weights = np.array([2, -3.4])
+    true_bias = 4.2
+    features, targets = generate_synthetic_data(true_weights, true_bias, 1000)
+
+    # setup model hyperparameters
+    learning_rate = 0.03
+    num_epochs = 3
+    batch_size = 10
+
+    for epoch in range(num_epochs):
+        for feature_batch, target_batch in read_data_in_batches(
+            batch_size, features, targets
+        ):
+            # Record the gradients of the current batch loss.
+            with autograd.record():
+                # Compute targets given the current features, weights, and bias.
+                predicted_targets = compute_linear_regression(
+                    feature_batch, trainable_weights, trainable_bias
+                )
+                # Measure the loss of the predictions against the real values.
+                loss = compute_squared_loss(predicted_targets, target_batch)
+
+            # Compute the gradients of our loss with respect to the trainable
+            # weights and bias
+            loss.backward()
+
+            # Update model weights and bias now since the gradients have been
+            # recorded.
+            stochastic_gradient_descent(
+                [trainable_weights, trainable_bias], learning_rate, batch_size
+            )
+
+        # Compute the overall results for the current epoch.
+        all_predicted_targets = compute_linear_regression(
+            features, trainable_weights, trainable_bias
+        )
+        total_loss = compute_squared_loss(all_predicted_targets, targets)
+        print(f"Epoch {epoch + 1}/{num_epochs}, loss {total_loss.mean().asnumpy()}")
+
+    # Compute the error between our obtained weights/bias against the true
+    # weights/bias.
+    measured_error_for_weights = true_weights - trainable_weights.reshape(
+        true_weights.shape
+    )
+    measured_error_for_bias = true_bias - trainable_bias
+    print(f"Error in estimating weights: {measured_error_for_weights}")
+    print(f"Error in estimating bias: {measured_error_for_bias}")
+
 
 def main():
     """
     Execute main functions of this module.
     """
-    true_weights = np.array([2, -3.4])
-    true_bias = 4.2
-
-    features, targets = generate_synthetic_data(true_weights, true_bias, 1000)
-    plot_generated_data_points(features, targets)
-
-    batch_size = 10
-    for feature_batch, target_batch in read_data_in_batches(
-        batch_size, features, targets
-    ):
-        print(feature_batch)
-        print(target_batch)
+    execute_model()
 
 
 if __name__ == "__main__":
