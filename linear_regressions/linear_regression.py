@@ -1,4 +1,5 @@
 import random
+from typing import Tuple
 
 from mxnet import autograd, np, npx
 
@@ -7,7 +8,9 @@ import d2l
 npx.set_np()
 
 
-def generate_synthetic_data(weights: np.array, bias: float, num_examples: int):
+def generate_synthetic_data(
+    weights: np.array, bias: float, num_examples: int
+) -> Tuple[np.array, np.array]:
     """
     Generate synthetic data that represents:
     y = X*w + b + noise
@@ -26,7 +29,7 @@ def generate_synthetic_data(weights: np.array, bias: float, num_examples: int):
     return features, targets
 
 
-def plot_generated_data_points(features: np.array, targets: np.array):
+def plot_generated_data_points(features: np.array, targets: np.array) -> None:
     """
     Plot our features and targets in a scatter plot.
     """
@@ -35,7 +38,9 @@ def plot_generated_data_points(features: np.array, targets: np.array):
     d2l.plt.savefig("generated_data")
 
 
-def read_data_in_batches(batch_size: int, features: np.array, targets: np.array):
+def read_data_in_batches(
+    batch_size: int, features: np.array, targets: np.array
+) -> Tuple[np.array, np.array]:
     """
     Read data previously generated in minibatches for training.
     """
@@ -48,6 +53,10 @@ def read_data_in_batches(batch_size: int, features: np.array, targets: np.array)
         yield features[batch_indices], targets[batch_indices]
 
 
+def execute_model():
+    pass
+
+
 def main():
     """
     Execute main functions of this module.
@@ -57,6 +66,13 @@ def main():
 
     features, targets = generate_synthetic_data(true_weights, true_bias, 1000)
     plot_generated_data_points(features, targets)
+
+    batch_size = 10
+    for feature_batch, target_batch in read_data_in_batches(
+        batch_size, features, targets
+    ):
+        print(feature_batch)
+        print(target_batch)
 
 
 if __name__ == "__main__":
