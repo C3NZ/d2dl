@@ -7,7 +7,7 @@ import d2l
 npx.set_np()
 
 
-def generate_synthetic_data(weights, bias, num_examples):
+def generate_synthetic_data(weights: np.array, bias: float, num_examples: int):
     """
     Generate synthetic data that represents:
     y = X*w + b + noise
@@ -26,13 +26,26 @@ def generate_synthetic_data(weights, bias, num_examples):
     return features, targets
 
 
-def plot_generated_data_points(features, targets):
+def plot_generated_data_points(features: np.array, targets: np.array):
     """
     Plot our features and targets in a scatter plot.
     """
     d2l.set_figsize((3.5, 2.5))
     d2l.plt.scatter(features[:, 1].asnumpy(), targets.asnumpy(), 1)
     d2l.plt.savefig("generated_data")
+
+
+def read_data_in_batches(batch_size: int, features: np.array, targets: np.array):
+    """
+    Read data previously generated in minibatches for training.
+    """
+    total_num_samples = len(features)
+    indices = list(range(total_num_samples))
+    random.shuffle(indices)
+
+    for i in range(0, total_num_samples, batch_size):
+        batch_indices = np.array(indices[i : min(i + batch_size, total_num_samples)])
+        yield features[batch_indices], targets[batch_indices]
 
 
 def main():
