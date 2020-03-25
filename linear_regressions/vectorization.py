@@ -32,6 +32,26 @@ class Timer:
         return np.array(self.times).cumsum().tolist()
 
 
+def compute_normal_distribution(z_value, mu, sigma):
+    probability = 1 / math.sqrt(2 * math.pi * sigma ** 2)
+    return probability * np.exp((-0.5 / sigma ** 2) * (z_value - mu) ** 2)
+
+
+def plot_normal_distributions():
+    x = np.arange(-7, 7, 0.01)
+
+    parameters = [(0, 1), (0, 2), (3, 1)]
+    d2l.plot(
+        x,
+        [compute_normal_distribution(x, mu, sigma) for mu, sigma in parameters],
+        xlabel="z",
+        ylabel="p(z)",
+        figsize=(4.5, 2.5),
+        legend=[f"mean {mu}, var {sigma}" for mu, sigma in parameters],
+    )
+    d2l.plt.savefig("normal_distributions")
+
+
 def main():
     zeros_vector = np.zeros(total_samples_per_vector)
     timer = Timer()
@@ -49,3 +69,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    plot_normal_distributions()
