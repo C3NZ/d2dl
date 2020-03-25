@@ -53,8 +53,42 @@ def read_data_in_batches(
         yield features[batch_indices], targets[batch_indices]
 
 
-def execute_model():
-    pass
+def compute_linear_regression(
+    features: np.array, weights: np.array, bias: int
+) -> np.array:
+    """
+    Linear regression implementation.
+    Equal to: X*w + b
+    """
+    return np.dot(features, weights) + bias
+
+
+def compute_squared_loss(
+    predicted_targets: np.array, measured_targets: np.array
+) -> np.array:
+    """
+    The loss function.
+    Equal to 1/2 * (y_pred - y_true) ** 2
+    """
+    # Reshape the measured results to be the same dimension as the predicted
+    # results.
+    reshaped_measured_targets = measured_targets.reshape(predicted_targets.shape)
+    return (predicted_targets - reshaped_measured_targets) ** 2 / 2
+
+
+def execute_model() -> None:
+    """
+    Create our linear regression model.
+    """
+    # Our initial random weights and bias
+    trainable_weights = np.random.normal(0, 0.01, (2, 1))
+    trainable_bias = np.zeros(1)
+
+    # Attach gradients to each for taking the partial derivatives of our our loss
+    # function with respect to these variables. (autograd will take care of the
+    # actual computation).
+    trainable_weights.attach_grad()
+    trainable_bias.attach_grad()
 
 
 def main():
