@@ -1,5 +1,5 @@
 import random
-from typing import Tuple
+from typing import List, Tuple
 
 from mxnet import autograd, np, npx
 
@@ -74,6 +74,22 @@ def compute_squared_loss(
     # results.
     reshaped_measured_targets = measured_targets.reshape(predicted_targets.shape)
     return (predicted_targets - reshaped_measured_targets) ** 2 / 2
+
+
+def stochastic_gradient_descent(
+    trainable_parameters: List[np.array], learning_rate: float, batch_size: int
+) -> None:
+    """
+    Estimate the gradient of the loss with respect to our parameters. We apply
+    a SGD update given the trainable parameters, learning rate, and batch size.
+    The size of the update is determined by the learning rate and normalized by
+    the batch size, so that the magnitude of a typical size step doesn't depend
+    on the batch size we choose.
+
+    Will update the parameters in place.
+    """
+    for parameter in trainable_parameters:
+        parameter[:] = (parameter - learning_rate * parameter.grad) / batch_size
 
 
 def execute_model() -> None:
