@@ -11,7 +11,9 @@ import d2l
 npx.set_np()
 
 
-def load_array(data_arrays: Tuple, batch_size: int, is_training: bool = True):
+def load_array(
+    data_arrays: Tuple, batch_size: int, is_training: bool = True
+) -> gluon.data.DataLoader:
     """
     Construct a Gluon data loader.
     """
@@ -19,7 +21,7 @@ def load_array(data_arrays: Tuple, batch_size: int, is_training: bool = True):
     return gluon.data.DataLoader(dataset, batch_size, shuffle=is_training)
 
 
-def main():
+def main() -> None:
     """
     Main execution of the module.
     """
