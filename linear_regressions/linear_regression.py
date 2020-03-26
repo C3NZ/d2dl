@@ -1,3 +1,6 @@
+"""
+Implementation of a linear regression network using autograd and np.
+"""
 import random
 from typing import List, Tuple
 
