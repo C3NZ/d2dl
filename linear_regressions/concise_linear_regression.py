@@ -57,11 +57,29 @@ def main():
                 predicted_targets = net(feature_batch)
                 batch_loss = l2_loss(predicted_targets, target_batch)
 
+            # Compute the gradients for all of our weights and bias. The trainer
+            # initialized the parameters for us already, allowing us to not worry
+            # about manually attaching gradients.
             batch_loss.backward()
+
+            # Because we're passing in a number of batches, we need to compute
+            # reduction of all gradients in order to update our model
+            # accordingly.
             trainer.step(batch_size)
 
+        # Compute the overall loss for the epoch.
         epoch_loss = l2_loss(net(features), targets)
         print(f"epoch {epoch}, loss: {epoch_loss.mean().asnumpy()}")
+
+    # Obtain the weights and biases from the first (and only) layer inside of
+    # our model.
+    first_layer_weights = net[0].weight.data()
+    first_layer_bias = net[0].bias.data()
+
+    print(
+        f"Error in estimating the weights: {true_weights.reshape(first_layer_weights.shape) - first_layer_weights}"
+    )
+    print(f"Error in estimating the bias: {true_bias - first_layer_bias}")
 
 
 if __name__ == "__main__":
